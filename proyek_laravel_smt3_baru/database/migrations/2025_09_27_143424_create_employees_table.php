@@ -19,7 +19,9 @@ return new class extends Migration
             $table->date('tanggal_lahir');
             $table->text('alamat');
             $table->date('tanggal_masuk');
-            $table->enum('status', ['aktif', 'nonaktif'])->default ('aktif'); 
+            $table->unsignedBigInteger('department_id')->nullable();
+            $table->unsignedBigInteger('position_id')->nullable();
+            $table->enum('status', ['aktif', 'nonaktif'])->default ('aktif');
             $table->timestamps();
         });
     }
