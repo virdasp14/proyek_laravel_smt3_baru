@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,6 +29,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -93,6 +95,7 @@
                 opacity: 0;
                 transform: translateY(-20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -326,78 +329,84 @@
         }
     </style>
 </head>
+
 <body>
-@extends('employees.master')
+    @extends('employees.master')
 
-@section('title', 'Daftar Department')
+    @section('title', 'Daftar Department')
 
-@section('content')
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Daftar Department</h1>
-        <a href="{{ route('departments.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Tambah Department
-        </a>
-    </div>
-
-    @if ($message = Session::get('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ $message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
-    <div class="card shadow-sm border-0">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Nama Department</th>
-                            <th scope="col" style="width: 20%;">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($departments as $index => $department)
-                        <tr>
-                            <td>{{ $departments->firstItem() + $index }}</td>
-                            <td>{{ $department->nama_department }}</td>
-                            <td>
-                                <form action="{{ route('departments.destroy', $department->id) }}" method="POST" class="d-flex gap-2">
-                                    <a href="{{ route('departments.show', $department->id) }}" class="btn btn-info btn-sm">
-                                        <i class="bi bi-eye"></i> Detail
-                                    </a>
-                                    <a href="{{ route('departments.edit', $department->id) }}" class="btn btn-warning btn-sm">
-                                        <i class="bi bi-pencil-square"></i> Edit
-                                    </a>
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus department ini?')">
-                                        <i class="bi bi-trash"></i> Delete
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="3" class="text-center">
-                                Data department masih kosong.
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+    @section('content')
+        <div class="container mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Daftar Department</h1>
+                <a href="{{ route('departments.create') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Tambah Department
+                </a>
             </div>
 
-            <div class="d-flex justify-content-center">
-                {!! $departments->links() !!}
+            @if ($message = Session::get('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ $message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Nama Department</th>
+                                    <th scope="col" style="width: 20%;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($departments as $index => $department)
+                                    <tr>
+                                        <td>{{ $departments->firstItem() + $index }}</td>
+                                        <td>{{ $department->nama_departemen }}</td>
+                                        <td>
+                                            <form action="{{ route('departments.destroy', $department->id) }}"
+                                                method="POST" class="d-flex gap-2">
+                                                <a href="{{ route('departments.show', $department->id) }}"
+                                                    class="btn btn-info btn-sm">
+                                                    <i class="bi bi-eye"></i> Detail
+                                                </a>
+                                                <a href="{{ route('departments.edit', $department->id) }}"
+                                                    class="btn btn-warning btn-sm">
+                                                    <i class="bi bi-pencil-square"></i> Edit
+                                                </a>
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm"
+                                                    onclick="return confirm('Yakin ingin menghapus department ini?')">
+                                                    <i class="bi bi-trash"></i> Delete
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="text-center">
+                                            Data department masih kosong.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        {!! $departments->links() !!}
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-@endsection
+    @endsection
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

@@ -14,4 +14,12 @@ class Position extends Model
         'nama_jabatan',
         'gaji_pokok',
     ];
+
+    /**
+     * Get all employees for this position
+     */
+    public function employees()
+    {
+        return $this->hasMany(Employee::class, 'position_id');
+    }
 }

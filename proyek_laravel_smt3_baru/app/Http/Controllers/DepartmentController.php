@@ -1,95 +1,92 @@
 <?php
 
+// ============================================
+// DepartmentController.php
+// ============================================
+
 namespace App\Http\Controllers;
 
-use App\Models\Department; // <-- 1. Import Model
+use App\Models\Department;
 use Illuminate\Http\Request;
 
 class DepartmentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        // 2. Ambil data dan kirim ke view
-        $departments = Department::latest()->paginate(10);
+        $departments = Department::withCount('employees')->paginate(10);
         return view('departments.index', compact('departments'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        // 3. Tampilkan form create
         return view('departments.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        // 4. Validasi data
-        $request->validate([
-            'nama_department' => 'required|string|max:100|unique:departments',
-        ]);
+        try {
+            $validated = $request->validate([
+                'nama_departemen' => 'required|string|max:255',
+                'kepala_departemen' => 'required|string|max:255',
+                'deskripsi' => 'required|string',
+                'status' => 'required|in:Aktif,Nonaktif'
+            ]);
 
-        // 5. Simpan data
-        Department::create($request->all());
+            Department::create($validated);
 
-        // 6. Redirect ke index
-        return redirect()->route('departments.index')
-                         ->with('success', 'Department berhasil ditambahkan.');
+            return redirect()->back()->with('success', 'Departemen berhasil ditambahkan!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal menambahkan departemen: ' . $e->getMessage());
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Department $department)
+    public function show($id)
     {
-        // 7. Tampilkan view show
+        $department = Department::withCount('employees')->with('employees')->findOrFail($id);
         return view('departments.show', compact('department'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Department $department)
+    public function edit($id)
     {
-        // 8. Tampilkan form edit
+        $department = Department::findOrFail($id);
         return view('departments.edit', compact('department'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Department $department)
+    public function update(Request $request, $id)
     {
-        // 9. Validasi data
-        $request->validate([
-            'nama_department' => 'required|string|max:100|unique:departments,nama_department,' . $department->id,
-        ]);
+        try {
+            $department = Department::findOrFail($id);
 
-        // 10. Update data
-        $department->update($request->all());
+            $validated = $request->validate([
+                'nama_departemen' => 'required|string|max:255',
+                'kepala_departemen' => 'required|string|max:255',
+                'deskripsi' => 'required|string',
+                'status' => 'required|in:Aktif,Nonaktif'
+            ]);
 
-        // 11. Redirect ke index
-        return redirect()->route('departments.index')
-                         ->with('success', 'Department berhasil diperbarui.');
+            $department->update($validated);
+
+            return redirect()->back()->with('success', 'Departemen berhasil diperbarui!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal memperbarui departemen: ' . $e->getMessage());
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Department $department)
+    public function destroy($id)
     {
-        // 12. Hapus data
-        $department->delete();
+        try {
+            $department = Department::findOrFail($id);
 
-        // 13. Redirect ke index
-        return redirect()->route('departments.index')
-                         ->with('success', 'Department berhasil dihapus.');
+            // Cek apakah ada pegawai di departemen ini
+            if ($department->employees()->count() > 0) {
+                return back()->with('error', 'Tidak dapat menghapus departemen yang masih memiliki pegawai!');
+            }
+
+            $department->delete();
+
+            return redirect()->back()->with('success', 'Departemen berhasil dihapus!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal menghapus departemen: ' . $e->getMessage());
+        }
     }
 }

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Form Input Pegawai</title>
     <meta charset="UTF-8">
@@ -39,6 +40,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -111,31 +113,38 @@
         }
 
         label[for="nama_lengkap"]::before {
-            content: '\f007'; /* user */
+            content: '\f007';
+            /* user */
         }
 
         label[for="email"]::before {
-            content: '\f0e0'; /* envelope */
+            content: '\f0e0';
+            /* envelope */
         }
 
         label[for="nomor_telepon"]::before {
-            content: '\f095'; /* phone */
+            content: '\f095';
+            /* phone */
         }
 
         label[for="tanggal_lahir"]::before {
-            content: '\f1fd'; /* birthday cake */
+            content: '\f1fd';
+            /* birthday cake */
         }
 
         label[for="alamat"]::before {
-            content: '\f3c5'; /* map marker */
+            content: '\f3c5';
+            /* map marker */
         }
 
         label[for="tanggal_masuk"]::before {
-            content: '\f133'; /* calendar */
+            content: '\f133';
+            /* calendar */
         }
 
         label[for="status"]::before {
-            content: '\f058'; /* check circle */
+            content: '\f058';
+            /* check circle */
         }
 
         input[type="text"],
@@ -265,7 +274,8 @@
             input[type="date"],
             select,
             textarea {
-                font-size: 16px; /* Prevents zoom on iOS */
+                font-size: 16px;
+                /* Prevents zoom on iOS */
             }
         }
 
@@ -299,58 +309,104 @@
                 opacity: 0;
                 transform: translateX(-20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateX(0);
             }
         }
 
-        table tr:nth-child(1) input { animation-delay: 0.1s; }
-        table tr:nth-child(2) input { animation-delay: 0.15s; }
-        table tr:nth-child(3) input { animation-delay: 0.2s; }
-        table tr:nth-child(4) input { animation-delay: 0.25s; }
-        table tr:nth-child(5) textarea { animation-delay: 0.3s; }
-        table tr:nth-child(6) input { animation-delay: 0.35s; }
-        table tr:nth-child(7) select { animation-delay: 0.4s; }
-        table tr:nth-child(8) button { animation-delay: 0.45s; }
+        table tr:nth-child(1) input {
+            animation-delay: 0.1s;
+        }
+
+        table tr:nth-child(2) input {
+            animation-delay: 0.15s;
+        }
+
+        table tr:nth-child(3) input {
+            animation-delay: 0.2s;
+        }
+
+        table tr:nth-child(4) input {
+            animation-delay: 0.25s;
+        }
+
+        table tr:nth-child(5) textarea {
+            animation-delay: 0.3s;
+        }
+
+        table tr:nth-child(6) input {
+            animation-delay: 0.35s;
+        }
+
+        table tr:nth-child(7) select {
+            animation-delay: 0.4s;
+        }
+
+        table tr:nth-child(8) button {
+            animation-delay: 0.45s;
+        }
     </style>
 </head>
+
 <body>
     <div class="form-wrapper">
         <h1 class="mb-4">Form Pegawai</h1>
+
+        @if ($errors->any())
+            <div class="alert alert-danger"
+                style="background: #fee; border: 2px solid #fcc; color: #c33; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                <strong>Error:</strong>
+                <ul style="margin: 10px 0 0 20px;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <form action="{{ route('employees.store') }}" method="POST">
             @csrf
             <table>
                 <tr>
                     <td><label for="nama_lengkap">Nama Lengkap:</label></td>
-                    <td><input type="text" id="nama_lengkap" name="nama_lengkap"></td>
+                    <td><input type="text" id="nama_lengkap" name="nama_lengkap" required
+                            value="{{ old('nama_lengkap') }}"></td>
                 </tr>
                 <tr>
                     <td><label for="email">Email:</label></td>
-                    <td><input type="email" id="email" name="email"></td>
+                    <td><input type="email" id="email" name="email" required value="{{ old('email') }}"></td>
                 </tr>
                 <tr>
                     <td><label for="nomor_telepon">Nomor Telepon:</label></td>
-                    <td><input type="text" id="nomor_telepon" name="nomor_telepon"></td>
+                    <td><input type="text" id="nomor_telepon" name="nomor_telepon" required
+                            value="{{ old('nomor_telepon') }}"></td>
                 </tr>
                 <tr>
                     <td><label for="tanggal_lahir">Tanggal Lahir:</label></td>
-                    <td><input type="date" id="tanggal_lahir" name="tanggal_lahir"></td>
+                    <td><input type="date" id="tanggal_lahir" name="tanggal_lahir" required
+                            value="{{ old('tanggal_lahir') }}"></td>
                 </tr>
                 <tr>
                     <td><label for="alamat">Alamat:</label></td>
-                    <td><textarea id="alamat" name="alamat"></textarea></td>
+                    <td>
+                        <textarea id="alamat" name="alamat" required>{{ old('alamat') }}</textarea>
+                    </td>
                 </tr>
                 <tr>
                     <td><label for="tanggal_masuk">Tanggal Masuk:</label></td>
-                    <td><input type="date" id="tanggal_masuk" name="tanggal_masuk"></td>
+                    <td><input type="date" id="tanggal_masuk" name="tanggal_masuk" required
+                            value="{{ old('tanggal_masuk') }}"></td>
                 </tr>
                 <tr>
                     <td><label for="status">Status:</label></td>
                     <td>
-                        <select id="status" name="status">
-                            <option value="aktif">Aktif</option>
-                            <option value="nonaktif">Nonaktif</option>
+                        <select id="status" name="status" required>
+                            <option value="">Pilih Status</option>
+                            <option value="Aktif">Aktif</option>
+                            <option value="Cuti">Cuti</option>
+                            <option value="Nonaktif">Nonaktif</option>
                         </select>
                     </td>
                 </tr>
@@ -364,4 +420,5 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

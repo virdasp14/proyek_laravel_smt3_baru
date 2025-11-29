@@ -45,6 +45,10 @@ class PositionController extends Controller
      */
     public function show(Position $position)
     {
+        // Load employees with their departments
+        $position->load(['employees.department']);
+        $position->loadCount('employees');
+
         return view('positions.show', compact('position'));
     }
 

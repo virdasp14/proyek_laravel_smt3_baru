@@ -1,6 +1,6 @@
 @extends('employees.master')
 
-@section('title', 'Detail Department')
+@section('title', 'Detail Position')
 
 @section('content')
     <style>
@@ -8,7 +8,7 @@
             padding: 40px 0;
         }
 
-        .dept-header {
+        .position-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 20px;
             padding: 40px;
@@ -17,13 +17,13 @@
             margin-bottom: 30px;
         }
 
-        .dept-header h1 {
+        .position-header h1 {
             font-size: 2.5rem;
             font-weight: 800;
             margin-bottom: 10px;
         }
 
-        .dept-header .subtitle {
+        .position-header .subtitle {
             font-size: 1.1rem;
             opacity: 0.9;
         }
@@ -136,7 +136,7 @@
             line-height: 1.3;
         }
 
-        .employee-position-compact {
+        .employee-department-compact {
             font-size: 0.9rem;
             color: #667eea;
             font-weight: 600;
@@ -237,22 +237,30 @@
             color: #cbd5e0;
             margin-bottom: 20px;
         }
+
+        .modal-backdrop {
+            z-index: 9998 !important;
+        }
+
+        .modal {
+            z-index: 9999 !important;
+        }
     </style>
 
     <div class="detail-container">
         <div class="container">
-            <!-- Header Department -->
-            <div class="dept-header">
+            <!-- Header Position -->
+            <div class="position-header">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <h1><i class="fas fa-building"></i> {{ $department->nama_departemen }}</h1>
-                        <p class="subtitle mb-0">Dipimpin oleh {{ $department->kepala_departemen }}</p>
+                        <h1><i class="fas fa-briefcase"></i> {{ $position->nama_jabatan }}</h1>
+                        <p class="subtitle mb-0">Gaji Pokok: Rp {{ number_format($position->gaji_pokok, 0, ',', '.') }}</p>
                     </div>
                     <div class="action-buttons">
-                        <a href="{{ route('departments.index') }}" class="btn btn-light btn-modern">
+                        <a href="{{ route('positions.index') }}" class="btn btn-light btn-modern">
                             <i class="fas fa-arrow-left"></i> Kembali
                         </a>
-                        <a href="{{ route('departments.edit', $department->id) }}" class="btn btn-warning btn-modern">
+                        <a href="{{ route('positions.edit', $position->id) }}" class="btn btn-warning btn-modern">
                             <i class="fas fa-edit"></i> Edit
                         </a>
                     </div>
@@ -261,34 +269,9 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <!-- Informasi Department -->
+                    <!-- Informasi Position -->
                     <div class="info-card">
-                        <div class="info-item">
-                            <div class="info-icon">
-                                <i class="fas fa-align-left"></i>
-                            </div>
-                            <div class="info-content">
-                                <div class="info-label">Deskripsi Department</div>
-                                <div class="info-value">{{ $department->deskripsi }}</div>
-                            </div>
-                        </div>
-
-                        <div class="info-item">
-                            <div class="info-icon">
-                                <i class="fas fa-toggle-on"></i>
-                            </div>
-                            <div class="info-content">
-                                <div class="info-label">Status Department</div>
-                                <div class="info-value">
-                                    <span class="badge {{ $department->status == 'Aktif' ? 'bg-success' : 'bg-danger' }}"
-                                        style="font-size: 1rem; padding: 8px 20px;">
-                                        {{ $department->status }}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mt-3">
+                        <div class="row">
                             <div class="col-md-4">
                                 <div class="info-item">
                                     <div class="info-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
@@ -296,19 +279,19 @@
                                     </div>
                                     <div class="info-content">
                                         <div class="info-label">Total Pegawai</div>
-                                        <div class="info-value">{{ $department->employees_count ?? 0 }} Orang</div>
+                                        <div class="info-value">{{ $position->employees_count ?? 0 }} Orang</div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="info-item">
                                     <div class="info-icon" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
-                                        <i class="fas fa-clock"></i>
+                                        <i class="fas fa-money-bill-wave"></i>
                                     </div>
                                     <div class="info-content">
-                                        <div class="info-label">Dibuat Pada</div>
-                                        <div class="info-value" style="font-size: 0.95rem;">
-                                            {{ $department->created_at->format('d M Y') }}</div>
+                                        <div class="info-label">Gaji Pokok</div>
+                                        <div class="info-value">Rp {{ number_format($position->gaji_pokok, 0, ',', '.') }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -320,7 +303,7 @@
                                     <div class="info-content">
                                         <div class="info-label">Update Terakhir</div>
                                         <div class="info-value" style="font-size: 0.95rem;">
-                                            {{ $department->updated_at->format('d M Y') }}</div>
+                                            {{ $position->updated_at->format('d M Y') }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -329,10 +312,10 @@
 
                     <!-- Daftar Pegawai -->
                     <div class="info-card mt-4">
-                        <h2 class="section-title"><i class="fas fa-users"></i> Daftar Pegawai</h2>
-                        @if ($department->employees && $department->employees->count() > 0)
+                        <h2 class="section-title"><i class="fas fa-users"></i> Pegawai dengan Posisi Ini</h2>
+                        @if ($position->employees && $position->employees->count() > 0)
                             <div class="row g-3">
-                                @foreach ($department->employees as $employee)
+                                @foreach ($position->employees as $employee)
                                     <div class="col-md-6">
                                         <div class="employee-card-compact">
                                             <div class="d-flex align-items-start gap-3">
@@ -341,9 +324,9 @@
                                                 </div>
                                                 <div class="flex-grow-1" style="min-width: 0;">
                                                     <h5 class="employee-name-compact">{{ $employee->nama_lengkap }}</h5>
-                                                    <p class="employee-position-compact">
-                                                        <i class="fas fa-briefcase"></i>
-                                                        <span>{{ $employee->position->nama_jabatan ?? 'Posisi tidak ada' }}</span>
+                                                    <p class="employee-department-compact">
+                                                        <i class="fas fa-building"></i>
+                                                        <span>{{ $employee->department->nama_departemen ?? 'Department tidak ada' }}</span>
                                                     </p>
                                                     <div class="employee-meta">
                                                         <span
@@ -366,7 +349,8 @@
                                                     <button type="button" class="btn-detail-compact" data-bs-toggle="modal"
                                                         data-bs-target="#employeeDetailModal"
                                                         data-nama="{{ $employee->nama_lengkap }}"
-                                                        data-position="{{ $employee->position->nama_jabatan ?? 'Posisi tidak ada' }}"
+                                                        data-position="{{ $position->nama_jabatan }}"
+                                                        data-department="{{ $employee->department->nama_departemen ?? 'Department tidak ada' }}"
                                                         data-email="{{ $employee->email ?? '-' }}"
                                                         data-phone="{{ $employee->nomor_telepon ?? '-' }}"
                                                         data-birth="{{ $employee->tanggal_lahir ?? '-' }}"
@@ -386,7 +370,7 @@
                             <div class="empty-state">
                                 <i class="fas fa-users-slash"></i>
                                 <h4 class="text-muted mb-3">Belum Ada Pegawai</h4>
-                                <p class="text-muted mb-4">Department ini belum memiliki pegawai. Silakan tambahkan pegawai
+                                <p class="text-muted mb-4">Posisi ini belum memiliki pegawai. Silakan tambahkan pegawai
                                     baru.</p>
                                 <a href="{{ route('employees.index') }}" class="btn btn-primary btn-modern">
                                     <i class="fas fa-plus"></i> Tambah Pegawai
@@ -423,6 +407,16 @@
                     </div>
 
                     <div class="detail-items">
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <div class="detail-content">
+                                <div class="detail-label">Department</div>
+                                <div class="detail-value" id="modalEmployeeDepartment"></div>
+                            </div>
+                        </div>
+
                         <div class="detail-item">
                             <div class="detail-icon">
                                 <i class="fas fa-envelope"></i>
@@ -550,20 +544,13 @@
             color: #2d3748;
             font-weight: 600;
         }
-
-        .modal-backdrop {
-            z-index: 9998 !important;
-        }
-
-        .modal {
-            z-index: 9999 !important;
-        }
     </style>
 
     <script>
         function showEmployeeDetail(button) {
             document.getElementById('modalEmployeeName').textContent = button.getAttribute('data-nama');
             document.getElementById('modalEmployeePosition').textContent = button.getAttribute('data-position');
+            document.getElementById('modalEmployeeDepartment').textContent = button.getAttribute('data-department');
             document.getElementById('modalEmployeeEmail').textContent = button.getAttribute('data-email');
             document.getElementById('modalEmployeePhone').textContent = button.getAttribute('data-phone');
             document.getElementById('modalEmployeeBirth').textContent = button.getAttribute('data-birth');
